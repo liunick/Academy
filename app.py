@@ -11,11 +11,24 @@ clarifaiApp = ClarifaiApp(api_key='d1df0d143a3a4e4b8ecb696c0ed9dde4')
 app.config['DEBUG'] = True
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['FILE_EXTENSIONS'] = ['png', 'jpg', 'pdf', 'jpeg', 'gif']
-
-
+app.config['KEYWORDS'] = ['pasta', 'spaghetti', 'angel-hair pasta']
+app.config['APPROVAL_PERCENTAGE'] = .6000
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in app.config['FILE_EXTENSIONS']
+
+def is_pasta(data):
+	cutoff = app.config['APPROVAL_PERCENTAGE']
+	return any(x in data.keys() for x in app.config['KEYWORDS']) \
+		and any(i > cutoff for i in (data[x] for x in app.config['KEYWORDS']))
+
+def clarifai_data(model, filename):
+	model = clarifaiApp.models.get(model)
+	output = model.predict_by_filename(filename=filename)
+	data = {}
+	for item in output['outputs'][0]['data']['concepts']:
+		data[item['name']] =  item['value']
+	return data
 
 @app.route('/')
 def index():
@@ -28,18 +41,9 @@ def uploadFile():
 		if fileObj and allowed_file(fileObj.filename):
 			safeFile = secure_filename(fileObj.filename)
 			local_filename = os.path.join(app.config['UPLOAD_FOLDER'], safeFile)
-			
-
-
 			fileObj.save(local_filename)
-
-			model = clarifaiApp.models.get('food-items-v1.0')
-			output = model.predict_by_filename(filename=local_filename)
-
-			for item in output['outputs'][0]['data']['concepts']:
-				print item['name'], ', ', item['value']
-
-			return redirect(url_for('uploaded_file', filename=safeFile))
+			data = clarifai_data('food-items-v1.0', local_filename)
+			return render_template('index.html', data=is_pasta(data))
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
