@@ -40,6 +40,20 @@ def clarifai_data(model, filename):
 def index():
 	return render_template('index.html')
 
+@app.route('/trainer', methods=['GET'])
+def trainer():
+	return render_template('trainer.html')
+
+@app.route('/train', methods=['GET', 'POST'])
+def trainModel():
+	if request.method == 'POST':
+		fileObj = request.files['file']
+		if fileObj and allowed_file(fileObj.filename):
+			safeFile = secure_filename(fileObj.filename)
+			local_filename = os.path.join(app.config['UPLOAD_FOLDER'], safeFile)
+			fileObj.save(local_filename)
+			
+
 @app.route('/upload', methods=['GET', 'POST'])
 def uploadFile():
 	if request.method == 'POST':

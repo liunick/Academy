@@ -1,0 +1,24 @@
+@import url('http://getbootstrap.com/dist/css/bootstrap.css');
+ html, body, .container-table {
+    height: 100%;
+}
+.center {
+    position: static;
+    align: center;
+    padding-top: 15%;
+
+}​
+.after {
+	position: static;
+	align: center;
+}
+
+.spacing {
+	margin-top: 25px;
+	margin-bottom: 5px;
+}
+
+.titling {
+	text-align: right;
+	align: right;
+}

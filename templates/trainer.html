@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+	rel="stylesheet">
+	<link href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation-float.css' rel='stylesheet'>
+</head>
+<body>
+	<div class="container">
+		<div class="header">
+			<h3 class="text-muted">Train Data</h3>
+		</div>
+		<hr/>
+		<div>
+
+			<form action="train" method="post" enctype="multipart/form-data">
+				<input type='file' name='file'><br />
+				Model Name: 
+				<input type="text" name="modelName"><br /><br />
+				<input type="submit" value="Upload">
+			</form>			
+		</div>
+	</div>
+</body>
+</html>
